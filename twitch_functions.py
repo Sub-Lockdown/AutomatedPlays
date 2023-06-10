@@ -1,6 +1,7 @@
 from twitchio.ext import commands
 from dotenv import load_dotenv
 import os
+import sys
 
 class Bot(commands.Bot):
 
@@ -48,6 +49,13 @@ class Bot(commands.Bot):
         """Provides context of how the command works."""
         msg = f'Hello {ctx.author.name}! Just type in ?translate followed by your text to translate to Spanish'
         await ctx.send(msg)
+    
+    async def restart(self, ctx: commands.Context):
+        """Restarts the bot"""
+        msg = f'{ctx.author.name}, I am restarting.'
+        await ctx.send(msg)
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
 
 # Checks if .env exists, and creates one if it doesn't
 from dotenv import load_dotenv
