@@ -1,7 +1,6 @@
 from twitchio.ext import commands
 from dotenv import load_dotenv
 import os
-from googletrans import Translator
 
 class Bot(commands.Bot):
 
@@ -38,25 +37,9 @@ class Bot(commands.Bot):
         if message.author.name in self.twitch_ignore:
             return
         
-        # Print the contents of our message to console and the detected langauge
-        translator = Translator()
-        translation = translator.translate(message.content)
+        # Print the contents of our message to console
         timestamp = message.timestamp.strftime("%H:%M:%S")
-        print(f'{timestamp} - {message.channel.name}\{message.author.name} -  {message.content}, {translation.src}')
-
-        # If Spanish is detected, sends the English translation to chat
-        if translation.src == 'es':
-            translation = translator.translate(message.content, dest='en')
-            await message.channel.send(f'@{message.author.name}: {translation.text}')
-        
-        # Inline translate command, translating English to Spanish, with an error message if another langauge
-        if "?translate" in message.content[:11].lower():
-            if translation.src == 'en':
-                translation = translator.translate(message.content[11:], dest='es')
-                await message.channel.send(f'@{message.author.name}: {translation.text}')
-            else:
-                await message.channel.send(f'@{message.author.name}: I currently only handle manual English to Spanish translations')
-            return
+        print(f'{timestamp} - {message.author.name} -  {message.content}')
 
         await self.handle_commands(message)
 
@@ -67,6 +50,8 @@ class Bot(commands.Bot):
         await ctx.send(msg)
 
 # Checks if .env exists, and creates one if it doesn't
+from dotenv import load_dotenv
+import os
 if os.path.isfile('.env') is False:
     with open('.env', 'w') as f:
         f.write('# .env\n')
