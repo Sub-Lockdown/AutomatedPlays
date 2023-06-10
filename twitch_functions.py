@@ -6,10 +6,7 @@ import sys
 class Bot(commands.Bot):
 
     def __init__(self):
-        """
-        Initialise our Bot with our access token and prefix from a .env file, and a list of channels.
-        
-        """
+        """ Initialise our Bot with our access token and prefix from a .env file, and a list of channels. """
         self.twitch_token = os.getenv('TWITCH_TOKEN')
         self.twitch_prefix = os.getenv('TWITCH_PREFIX')
         self.twitch_channels = os.getenv('TWITCH_CHANNELS').split(',')
@@ -17,9 +14,7 @@ class Bot(commands.Bot):
         super().__init__(token=self.twitch_token, prefix=self.twitch_prefix, initial_channels=self.twitch_channels)
 
     async def event_ready(self):
-        """"
-        Reports what username and user id is logged in, and what channels it's connected to
-        """
+        """" Reports what username and user id is logged in, and what channels it's connected to """
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')
 
@@ -27,15 +22,9 @@ class Bot(commands.Bot):
             print(f'Connected to | {channel}')
 
     async def event_message(self, message):
-        """
-        Main method of reading through twitch chat
-        """
-
-        # Ignores messages by Twitch_Polyglot
-        if message.echo:
-            return
-        # Ignores messages by nightbot or streamelements
-        if message.author.name in self.twitch_ignore:
+        """ Main method of reading through twitch chat """
+        # Ignores messages by self or stated users/bots
+        if message.echo or message.author.name in self.twitch_ignore:
             return
         
         # Print the contents of our message to console
@@ -50,6 +39,7 @@ class Bot(commands.Bot):
         msg = f'Hello {ctx.author.name}! Just type in ?translate followed by your text to translate to Spanish'
         await ctx.send(msg)
     
+    @commands.command()
     async def restart(self, ctx: commands.Context):
         """Restarts the bot"""
         msg = f'{ctx.author.name}, I am restarting.'
